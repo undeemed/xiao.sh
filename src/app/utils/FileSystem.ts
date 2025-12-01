@@ -78,6 +78,23 @@ Finalist:
 Sad:
 - [Wishlist](https://github.com/shlawgathon/wishlist): Agentic Fundriasing platform powered by Locus Agentic Wallet System - Crypto Kickstarter for fundraisers who want to use Locus for agentic fund payment distribution. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_another-day-another-hackathon-shack15-activity-7385938406486437888-_u5O?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)
 - [CloudConstruct](https://github.com/shlawgathon/cloudconstruct): Spins up deployments via whiteboard - automatic system design to real deployments, draw box and describe the spec sheet and gemini will generate on the fly. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_we-built-cloudconstruct-last-night-although-activity-7393469310590963712-8B4R?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)` },
+        'context.md': { type: 'file', content: `Additional Context:
+(Add any extra details here that you want the AI to know about you, your work, or specific topics. The AI will read this file and use it to answer questions.)
+
+- My motorcycle is a 2024 Yamaha YZF R7, it has 8k miles and carbon fairings.
+- I have a sister who is 2 years younger than me.
+- My cat is named Mida and he is an american shorthair.
+- My dog is named Mocha and he is a kuroshiba-Inu mix.
+- I have a black belt in taekwondo.
+- My birthday is 09/30/2007.
+- I have been coding since highschool.
+- I am an Introvert.
+- I play Mincraft, Wuthering Waves, and OSU.
+- I have 192 Winstreak in Minecraft Hypixel Duels.
+- I was top 4% in OSU circle.
+- I played piano for a year and got grade 2 certification.
+
+` },
       }
     },
   }

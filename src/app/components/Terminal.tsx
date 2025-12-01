@@ -437,8 +437,13 @@ interface HistoryItem {
             const projectsNode = getCurrentNode(['user', 'projects.md']);
             const projectsContent = projectsNode && projectsNode.type === 'file' ? projectsNode.content : '';
 
+            // Get additional context content
+            const contextNode = getCurrentNode(['user', 'context.md']);
+            const contextContent = contextNode && contextNode.type === 'file' ? contextNode.content : '';
+
             // Construct system prompt with explicit valid paths, biography, and link values
             const systemPrompt = `You are an AI assistant in a portfolio terminal. 
+Current Date & Time: ${new Date().toLocaleString()}
 User Current Path: ${getPathString(currentPath)}
 
 USER BIOGRAPHY:
@@ -446,6 +451,9 @@ ${bioContent}
 
 USER PROJECTS:
 ${projectsContent}
+
+ADDITIONAL CONTEXT:
+${contextContent}
 
 VALID OPENABLE PATHS: [${validPathsStr}]
 

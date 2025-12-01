@@ -18,7 +18,7 @@ A fully interactive, browser-based terminal portfolio built with Next.js. It fea
 
 ## Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.js.org/) (React)
+- **Framework**: [Next.js](https://nextjs.org/) (React)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **AI Engine**: [WebLLM](https://webllm.mlc.ai/) (In-browser LLM inference)
 - **Backend**: [Redis](https://redis.io/) (Vercel KV)
@@ -37,29 +37,6 @@ A fully interactive, browser-based terminal portfolio built with Next.js. It fea
 | `explore`     | View file system tree             |
 | `clear`       | Clear the terminal output         |
 | `history`     | Show command history              |
-
-## Getting Started
-
-1.  Clone the repository:
-
-    ```bash
-    git clone https://github.com/undeemed/xiao.sh.git
-    cd xiao.sh
-    ```
-
-2.  Install dependencies:
-
-    ```bash
-    npm install
-    ```
-
-3.  Run the development server:
-
-    ```bash
-    npm run dev
-    ```
-
-4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## License
 

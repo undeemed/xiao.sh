@@ -44,12 +44,13 @@ interface HistoryItem {
 
       const suggestions = [
           ' send jerry an email about a coffee chat on tuesday',
-          ' give me HIS socials',
-          ' show me jerry linkedin and github',
+          ' give me his socials',
+          ' show me jerry\'s linkedin and github',
           ' contacts info',
-          ' show me HIS resume',
-          ' show me jerry projects and awards',
-          ' open jerry instagram pls'
+          ' show me his resume',
+          ' show me jerry\'s projects and awards',
+          ' open jerry instagram',
+          ' ask jerry if he is free on saturday'
       ];
 
       let suggestionIndex = 0;
@@ -476,11 +477,14 @@ BEHAVIOR RULES:
    - "open resume" -> [[OPEN: resume]] (This will open the view link)
    - "show resume" -> List the view and download links with their URLs.
 8. EMAIL COMPOSITION:
-   - If the user asks to "send email", "write email", "compose email" to someone:
+   - If the user asks to "send email", "write email", "compose email", OR says "ask jerry [question]", OR asks about Jerry's availability/schedule (e.g. "is jerry free?", "can jerry meet?"):
    - Output action: [[EMAIL: recipient_email | subject | body]]
    - Extract the recipient's email. If the user says "jerry", look up his email in the LINK VALUES (e.g. jerry.x0930@gmail.com).
    - Extract the subject and body from the user's request.
-   - Example: "send jerry an email about coffee at 6" -> [[EMAIL: jerry.x0930@gmail.com | Coffee Chat | Hi Jerry,\n\nI'd like to meet for coffee at 6 tomorrow.\n\nBest,]]
+   - CRITICAL: Do not say "I can help you draft an email". JUST OUTPUT THE ACTION.
+   - Example 1: "send jerry an email about coffee at 6" -> [[EMAIL: jerry.x0930@gmail.com | Coffee Chat | Hi Jerry,\n\nI'd like to meet for coffee at 6 tomorrow.\n\nBest,]]
+   - Example 2: "ask jerry if he is free on saturday" -> [[EMAIL: jerry.x0930@gmail.com | Availability on Saturday | Hi Jerry,\n\nAre you free this coming Saturday? I'd like to connect.\n\nBest,]]
+   - Example 3: "is jerry free on saturday?" -> [[EMAIL: jerry.x0930@gmail.com | Availability on Saturday | Hi Jerry,\n\nAre you free this coming Saturday? I'd like to connect.\n\nBest,]]
 
 Example 1 (User: "open github"): [[OPEN: github]]
 Example 2 (User: "show github"): "My GitHub is https://github.com/undeemed. You can open it by typing '/ai open github'."
@@ -570,8 +574,8 @@ Otherwise, answer concisely and helpfully.`;
             if (emailActions.length > 0) {
                 emailActions.forEach(email => {
                     const mailtoLink = `mailto:${email.to}?subject=${encodeURIComponent(email.subject)}&body=${encodeURIComponent(email.body.replace(/\\n/g, '\n'))}`;
-                    // Try to open automatically
-                    window.open(mailtoLink, '_blank');
+                    // Open using location.href to avoid popup blockers and blank tabs
+                    window.location.href = mailtoLink;
                     
                     // Provide a clickable fallback
                     updateOutput(
@@ -864,7 +868,7 @@ Otherwise, answer concisely and helpfully.`;
       if (!hasStartedTyping) return;
 
       const texts = [
-          "Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Currently pursuing full-stack development with a focus on technical product management, strategy and design. Fluent in Mandarin Cantonese, and English. Enjoys Motorsports, Taekwondo, Boxing, and Calisthenics. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information. Feel free to ask the AI *anything*.",
+          "Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Currently pursuing full-stack development with a focus on technical product management, strategy and design. I'm fluent in Mandarin, Cantonese, and English. I enjoy Taekwondo, Boxing, and Calisthenics. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information. You can ask the AI about *anything*.",
           "If you are going to try, go all the way. Otherwise, don’t even start. If you are going to try, go all the way. This can mean losing girlfriends, wives, relatives, jobs, and maybe your mind. Go all the way. It can mean not eating for three or four days. It can mean freezing on a park bench. It can mean jail. It can mean derision, mockery, isolation. Isolation is the gift. All the others are a test of your endurance—how much you really want to do it. And you’ll do it, despite rejection and the worst odds. And it’ll be better than anything you can imagine. If you’re going to try, go all the way. There’s no other feeling like that. You’ll be alone with the gods, and the nights will flame with fire. Do it. Do it. All the way. All the way. You will ride life straight to perfect laughter. It’s the only good fight there is."
       ];
 

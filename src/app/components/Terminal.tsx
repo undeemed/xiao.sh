@@ -433,12 +433,19 @@ interface HistoryItem {
             const bioNode = getCurrentNode(['user', 'biography.txt']);
             const bioContent = bioNode && bioNode.type === 'file' ? bioNode.content : '';
 
+            // Get projects content
+            const projectsNode = getCurrentNode(['user', 'projects.md']);
+            const projectsContent = projectsNode && projectsNode.type === 'file' ? projectsNode.content : '';
+
             // Construct system prompt with explicit valid paths, biography, and link values
             const systemPrompt = `You are an AI assistant in a portfolio terminal. 
 User Current Path: ${getPathString(currentPath)}
 
 USER BIOGRAPHY:
 ${bioContent}
+
+USER PROJECTS:
+${projectsContent}
 
 VALID OPENABLE PATHS: [${validPathsStr}]
 
@@ -454,7 +461,7 @@ BEHAVIOR RULES:
 1. If the user EXPLICITLY asks to "open", "launch", or "start" a link (e.g. "open github", "launch linkedin"), output the action: [[OPEN: name]]. You can use the short name (e.g. "github", "email-main").
 2. If the user asks to "show", "list", "display", "what are", or "give me" (e.g. "show me your links", "give me his socials"), YOU MUST ALWAYS PROVIDE THE ACTUAL LINK VALUE (URL) for each item. DO NOT just list the path.
 3. After listing the link value, tell the user they can open it by typing: "/ai open [name]".
-4. If asked about "projects", "work", or "portfolio", say "You can view my projects on my GitHub" and provide the GitHub URL.
+4. If asked about "projects", "work", or "portfolio", USE THE "USER PROJECTS" section above to list the specific projects with their descriptions and links. DO NOT just say "check my github".
 5. If asked "who is jerry" or about the user, use the USER BIOGRAPHY above to answer.
 6. NEVER just output a file path like "home/github" without the accompanying URL. The user wants to see the actual link.
 7. RESUME HANDLING:
@@ -477,7 +484,12 @@ Example 3 (User: "links"):
 * Instagram: https://instagram.com/unperspicuous
 
 Type '/ai open [name]' to visit any of them."
-Example 4 (User: "projects"): "My projects are hosted on GitHub (https://github.com/undeemed). You can open it by typing '/ai open github'."
+Example 4 (User: "projects"): 
+"Here are some of my projects:
+* WebBrain: AI Browser History Recall (https://github.com/shlawgathon/WebBrain)
+* ProductKit: Product Image to Shopify Listing (https://github.com/shlawgathon/productkit)
+
+You can see more on my GitHub: https://github.com/undeemed"
 Example 5 (User: "what is your email?"): "My email is jerry.x0930@gmail.com. You can open it by typing '/ai open email-main'."
 Example 6 (User: "open resume"): [[OPEN: resume]]
 Example 7 (User: "download resume"): [[OPEN: resume/download]]
@@ -835,7 +847,7 @@ Otherwise, answer concisely and helpfully.`;
       if (!hasStartedTyping) return;
 
       const texts = [
-          "Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and pursuing a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information. Feel free to ask the AI *anything*.",
+          "Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Currently pursuing full-stack development with a focus on technical product management, strategy and design. Fluent in Mandarin Cantonese, and English. Enjoys Motorsports, Taekwondo, Boxing, and Calisthenics. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information. Feel free to ask the AI *anything*.",
           "If you are going to try, go all the way. Otherwise, don’t even start. If you are going to try, go all the way. This can mean losing girlfriends, wives, relatives, jobs, and maybe your mind. Go all the way. It can mean not eating for three or four days. It can mean freezing on a park bench. It can mean jail. It can mean derision, mockery, isolation. Isolation is the gift. All the others are a test of your endurance—how much you really want to do it. And you’ll do it, despite rejection and the worst odds. And it’ll be better than anything you can imagine. If you’re going to try, go all the way. There’s no other feeling like that. You’ll be alone with the gods, and the nights will flame with fire. Do it. Do it. All the way. All the way. You will ride life straight to perfect laughter. It’s the only good fight there is."
       ];
 
@@ -887,7 +899,7 @@ Otherwise, answer concisely and helpfully.`;
                 <div className="text-blue-400 font-bold whitespace-pre leading-none select-none overflow-x-auto pb-2">
                     {neofetchArt}
                 </div>
-                <div className={`-mt-3 text-gray-300 max-w-2xl leading-relaxed transition-opacity duration-700 delay-200 ${neofetchStep >= 3 ? 'opacity-100' : 'opacity-0'} min-h-[120px]`}>
+                <div className={`-mt-3 text-gray-300 max-w-2xl leading-relaxed transition-opacity duration-700 delay-200 ${neofetchStep >= 3 ? 'opacity-100' : 'opacity-0'} min-h-[300px]`}>
                     <div className="text-green-400 font-bold mb-2">README.md</div>
                     {readmeText}
                     <span className={`inline-block w-2 h-4 bg-gray-400 ml-1 align-middle ${isCursorVisible ? 'opacity-100' : 'opacity-0'}`}></span>

@@ -67,32 +67,17 @@ export const fileSystem: FileSystemNode = {
     user: {
       type: 'directory',
       children: {
-        'biography.txt': { 
-            type: 'file', 
-            content: `Name: Jerry Xiao
-Age: 18
-Birthday: 09/30/2007
-Gender: Male
-Education: Northeastern University (Freshman, CS + AI, Minor in Business)
-Coding Since: High School
-
-Interests:
-- Top Games: Minecraft, Wuthering Waves, OSU
-- Motorcycle: Yamaha YZF R7 2024
-
-Pets:
-- Dog: Kuroshiba Inu
-- Cat: Grey American Shorthair
-
-Family:
-- Younger sister
-
-Projects:
-- See /home/github for projects
-
-Awards & Certifications:
-- See /home/linkedin for details`
-        },
+        'biography.txt': { type: 'file', content: `Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and pursuing a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Currently pursuing full-stack development with a focus on technical product management, strategy and design. Fluent in Mandarin Cantonese, and English. Enjoys Motorsports, Taekwondo, Boxing, and Calisthenics. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information.` },
+        'projects.md': { type: 'file', content: `Top 3:
+- [WebBrain](https://github.com/shlawgathon/WebBrain): AI Browser History Recall - chat with your history, describe something you've seen before online and AI will recall for you. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_i-had-lots-of-fun-at-the-mongodb-agentic-activity-7383038759665164288-yzTn?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)
+---
+Finalist:
+- [ProductKit](https://github.com/shlawgathon/productkit): Product Image to Shopify Listing with AI Description, Infographic, Manual/Usage/Maintence Info, Showcase Video, and 3D Asset With AR Interaction. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_github-shlawgathonproductkit-an-agentic-activity-7398606880346030080-OeHb?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)
+- [SportsClips](https://github.com/shlawgathon/sportsclips): TikTok, but fully automated for sports highlights & live commentary generation via video chunking pipeline with Gemini detection and YT API. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_another-day-another-hackathon-shack15-activity-7385938406486437888-_u5O?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)
+---
+Sad:
+- [Wishlist](https://github.com/shlawgathon/wishlist): Agentic Fundriasing platform powered by Locus Agentic Wallet System - Crypto Kickstarter for fundraisers who want to use Locus for agentic fund payment distribution. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_another-day-another-hackathon-shack15-activity-7385938406486437888-_u5O?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)
+- [CloudConstruct](https://github.com/shlawgathon/cloudconstruct): Spins up deployments via whiteboard - automatic system design to real deployments, draw box and describe the spec sheet and gemini will generate on the fly. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_we-built-cloudconstruct-last-night-although-activity-7393469310590963712-8B4R?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)` },
       }
     },
   }

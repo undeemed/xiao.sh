@@ -12,14 +12,16 @@ A fully interactive, browser-based terminal portfolio built with Next.js. It fea
   - **Smart Actions**: Can open links (`[[OPEN: ...]]`) and draft emails (`[[EMAIL: ...]]`) directly.
 - **Neofetch Animation**: Custom startup sequence displaying system info and ASCII art.
 - **Virtual File System**: Navigate through directories, view files, and execute "scripts".
-- **Ghost Typing Biography**: Rotating biography text with a typing/deleting animation effect.
+- **Ghost Typing README**: Rotating README.md text with a typing/deleting animation effect.
+- **Serverless Visit Counter**: Accurate visitor tracking using Vercel KV (Redis).
 - **Responsive Design**: Optimized for both desktop and mobile experiences.
 
 ## Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org/) (React)
+- **Framework**: [Next.js](https://nextjs.js.org/) (React)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **AI Engine**: [WebLLM](https://webllm.mlc.ai/) (In-browser LLM inference)
+- **Backend**: [Redis](https://redis.io/) (Vercel KV)
 - **Deployment**: [Vercel](https://vercel.com/)
 
 ## Commands

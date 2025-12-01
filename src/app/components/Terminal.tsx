@@ -899,7 +899,7 @@ Otherwise, answer concisely and helpfully.`;
                 <div className="text-blue-400 font-bold whitespace-pre leading-none select-none overflow-x-auto pb-2">
                     {neofetchArt}
                 </div>
-                <div className={`-mt-3 text-gray-300 max-w-2xl leading-relaxed transition-opacity duration-700 delay-200 ${neofetchStep >= 3 ? 'opacity-100' : 'opacity-0'} min-h-[300px]`}>
+                <div className={`-mt-3 text-gray-300 max-w-2xl leading-relaxed transition-opacity duration-700 delay-200 ${neofetchStep >= 3 ? 'opacity-100' : 'opacity-0'} min-h-[375px]`}>
                     <div className="text-green-400 font-bold mb-2">README.md</div>
                     {readmeText}
                     <span className={`inline-block w-2 h-4 bg-gray-400 ml-1 align-middle ${isCursorVisible ? 'opacity-100' : 'opacity-0'}`}></span>

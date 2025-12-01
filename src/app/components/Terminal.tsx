@@ -816,6 +816,17 @@ Otherwise, answer concisely and helpfully.`;
       return () => clearInterval(timer);
   }, []);
 
+  const [resolution, setResolution] = useState('Detecting...');
+
+  useEffect(() => {
+      const updateResolution = () => {
+          setResolution(`${window.innerWidth}x${window.innerHeight}`);
+      };
+      updateResolution();
+      window.addEventListener('resize', updateResolution);
+      return () => window.removeEventListener('resize', updateResolution);
+  }, []);
+
   const neofetchInfo = [
     { label: 'Browser', value: browserInfo },
     { label: 'Host', value: 'xiao.sh' },
@@ -823,7 +834,7 @@ Otherwise, answer concisely and helpfully.`;
     { label: 'Visits', value: visitCount },
     { label: 'Session Time', value: timeSpent },
     { label: 'Shell', value: 'Zsh' },
-    { label: 'Resolution', value: '1920x1080' },
+    { label: 'Resolution', value: resolution },
     { label: 'Theme', value: 'Dark Neon' },
     { label: 'Font', value: 'Menlo' },
     { label: 'Local LLM', value: SELECTED_MODEL },

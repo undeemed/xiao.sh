@@ -1,40 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# xiao.sh - Terminal Portfolio
+
+A fully interactive, browser-based terminal portfolio built with Next.js. It features a virtual file system, local AI integration, and a retro aesthetic.
+
+## Features
+
+- **Interactive Terminal**: A bash-like interface with command history, tab completion, and standard commands (`ls`, `cd`, `cat`, `clear`, `help`).
+- **Local AI Integration**: Powered by **WebLLM** (running Llama 3.2 3B locally in your browser via WebGPU).
+  - Use `/ai [query]` to chat with the assistant.
+  - Context-aware: Knows about my projects, bio, and links.
+  - **Ghost Typing**: Dynamic typing effects for AI suggestions and biography.
+  - **Smart Actions**: Can open links (`[[OPEN: ...]]`) and draft emails (`[[EMAIL: ...]]`) directly.
+- **Neofetch Animation**: Custom startup sequence displaying system info and ASCII art.
+- **Virtual File System**: Navigate through directories, view files, and execute "scripts".
+- **Ghost Typing Biography**: Rotating biography text with a typing/deleting animation effect.
+- **Responsive Design**: Optimized for both desktop and mobile experiences.
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (React)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **AI Engine**: [WebLLM](https://webllm.mlc.ai/) (In-browser LLM inference)
+- **Deployment**: [Vercel](https://vercel.com/)
+
+## Commands
+
+| Command       | Description                       |
+| :------------ | :-------------------------------- |
+| `help`        | Show available commands           |
+| `ls`          | List directory contents           |
+| `cd [dir]`    | Change directory                  |
+| `cat [file]`  | View file contents                |
+| `open [link]` | Open a link (e.g., `open github`) |
+| `/ai [query]` | Ask the AI assistant              |
+| `explore`     | View file system tree             |
+| `clear`       | Clear the terminal output         |
+| `history`     | Show command history              |
 
 ## Getting Started
 
-First, run the development server:
+1.  Clone the repository:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+    ```bash
+    git clone https://github.com/undeemed/xiao.sh.git
+    cd xiao.sh
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2.  Install dependencies:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+    ```bash
+    npm install
+    ```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+3.  Run the development server:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+    ```bash
+    npm run dev
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+MIT

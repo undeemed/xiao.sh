@@ -739,17 +739,26 @@ Otherwise, answer concisely and helpfully.`;
     }
     setBrowserInfo(browser);
 
-    // Visit counter simulation (using localStorage to persist "my" visits, plus a base number)
-    const baseVisits = 1337;
-    const storedVisits = localStorage.getItem('visitCount');
-    let newCount = baseVisits;
-    if (storedVisits) {
-        newCount = parseInt(storedVisits) + 1;
-    } else {
-        newCount = baseVisits + 1;
-    }
-    localStorage.setItem('visitCount', newCount.toString());
-    setVisitCount(newCount.toLocaleString());
+    // Fetch visit count from serverless API
+    const fetchVisits = async () => {
+        try {
+            const res = await fetch('/api/visit-count');
+            const data = await res.json();
+            if (data.count) {
+                setVisitCount(data.count.toLocaleString());
+            }
+        } catch (error) {
+            console.error('Failed to fetch visits:', error);
+            // Fallback to basic local storage simulation if API fails
+            const storedVisits = localStorage.getItem('visitCount');
+            const baseVisits = 1337;
+            const newCount = storedVisits ? parseInt(storedVisits) + 1 : baseVisits + 1;
+            localStorage.setItem('visitCount', newCount.toString());
+            setVisitCount(newCount.toLocaleString());
+        }
+    };
+
+    fetchVisits();
 
     // Simulate boot sequence or just show neofetch
     const timer = setTimeout(() => {

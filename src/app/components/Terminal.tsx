@@ -905,7 +905,7 @@ Otherwise, answer concisely and helpfully.`;
       {showNeofetch && (
         <div className="mb-6 flex flex-col md:flex-row gap-8">
             <div className={`flex flex-col transition-opacity duration-500 ${neofetchStep >= 1 ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="text-blue-400 font-bold whitespace-pre leading-none select-none overflow-x-auto pb-2">
+                <div className="-mt-6 text-blue-400 font-bold whitespace-pre leading-none select-none overflow-x-auto pb-2">
                     {neofetchArt}
                 </div>
                 <div className={`-mt-3 text-gray-300 max-w-2xl leading-relaxed transition-opacity duration-700 delay-200 ${neofetchStep >= 3 ? 'opacity-100' : 'opacity-0'} min-h-[375px]`}>
@@ -914,7 +914,7 @@ Otherwise, answer concisely and helpfully.`;
                     <span className={`inline-block w-2 h-4 bg-gray-400 ml-1 align-middle ${isCursorVisible ? 'opacity-100' : 'opacity-0'}`}></span>
                 </div>
             </div>
-            <div className="flex flex-col justify-center min-w-[200px]">
+            <div className="flex flex-col justify-start min-w-[200px]">
                 <div className={`mb-0 transition-opacity duration-300 ${neofetchStep >= 2 ? 'opacity-100' : 'opacity-0'}`}>
                     <span className="text-green-400 font-bold">guest</span>@<span className="text-green-400 font-bold">xiao.sh</span>
                 </div>

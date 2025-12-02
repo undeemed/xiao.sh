@@ -810,10 +810,24 @@ Otherwise, answer concisely and helpfully.`;
   const aiStatus = getAiStatus();
 
   const [timeSpent, setTimeSpent] = useState('0s');
+  const [totalUptime, setTotalUptime] = useState('Calculating...');
 
   useEffect(() => {
       const startTime = Date.now();
+      let siteStartTime = Date.now();
+
+      // Fetch site start time
+      fetch('/api/uptime')
+          .then(res => res.json())
+          .then(data => {
+              if (data.startTime) {
+                  siteStartTime = data.startTime;
+              }
+          })
+          .catch(err => console.error('Failed to fetch uptime:', err));
+
       const timer = setInterval(() => {
+          // Session Time
           const diff = Date.now() - startTime;
           const seconds = Math.floor((diff / 1000) % 60);
           const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -825,6 +839,22 @@ Otherwise, answer concisely and helpfully.`;
           timeStr += `${seconds}s`;
           
           setTimeSpent(timeStr);
+
+          // Total Uptime
+          const totalDiff = Date.now() - siteStartTime;
+          const tSeconds = Math.floor((totalDiff / 1000) % 60);
+          const tMinutes = Math.floor((totalDiff / (1000 * 60)) % 60);
+          const tHours = Math.floor((totalDiff / (1000 * 60 * 60)) % 24);
+          const tDays = Math.floor(totalDiff / (1000 * 60 * 60 * 24));
+
+          let totalStr = '';
+          if (tDays > 0) totalStr += `${tDays}d `;
+          if (tHours > 0 || tDays > 0) totalStr += `${tHours}h `;
+          if (tMinutes > 0 || tHours > 0 || tDays > 0) totalStr += `${tMinutes}m `;
+          totalStr += `${tSeconds}s`;
+          
+          setTotalUptime(totalStr);
+
       }, 1000);
       return () => clearInterval(timer);
   }, []);
@@ -845,6 +875,7 @@ Otherwise, answer concisely and helpfully.`;
     { label: 'Host', value: 'xiao.sh' },
     { label: 'Kernel', value: 'Next.js 16.0.6' },
     { label: 'Visits', value: visitCount },
+    { label: 'Total Uptime', value: totalUptime },
     { label: 'Session Time', value: timeSpent },
     { label: 'Shell', value: 'Zsh' },
     { label: 'Resolution', value: resolution },

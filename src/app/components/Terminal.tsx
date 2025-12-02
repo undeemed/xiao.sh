@@ -16,6 +16,7 @@ interface HistoryItem {
   const [isGhostTyping, setIsGhostTyping] = useState(false);
   const ghostTypingRef = useRef<NodeJS.Timeout | null>(null);
   const [currentPath, setCurrentPath] = useState<string[]>([]); // Root is empty array
+  const [fullScreenComponent, setFullScreenComponent] = useState<React.ReactNode | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -643,7 +644,9 @@ Otherwise, answer concisely and helpfully.`;
                           output = 'Switched to Light Mode.';
                       }
                   } else if (potentialNode.action) {
-                      const result = await potentialNode.action();
+                      const result = await potentialNode.action({
+                          launchFullScreen: (component: React.ReactNode) => setFullScreenComponent(component)
+                      });
                       output = result;
                   }
              } else {
@@ -1019,6 +1022,12 @@ Otherwise, answer concisely and helpfully.`;
         </div>
       </div>
       <div ref={bottomRef} />
+      
+      {fullScreenComponent && (
+          <div className="fixed inset-0 z-50 bg-black">
+              {fullScreenComponent}
+          </div>
+      )}
     </div>
   );
 }

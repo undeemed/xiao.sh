@@ -1,7 +1,7 @@
 import { createClient } from 'redis';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const redis = createClient({
         url: process.env.REDIS_URL
@@ -11,14 +11,23 @@ export async function GET() {
 
     await redis.connect();
 
-    // Increment the visit count
-    const count = await redis.incr('visits');
+    // Extract IP address
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const ip = forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
+
+    // Add IP to unique visitors set
+    if (ip !== 'unknown') {
+        await redis.sAdd('unique_visitors', ip);
+    }
+    
+    // Get total unique visitors
+    const count = await redis.sCard('unique_visitors');
     
     await redis.disconnect();
     
     return NextResponse.json({ count });
   } catch (error) {
-    console.error('Error incrementing visit count:', error);
+    console.error('Error counting unique visits:', error);
     // Fallback
     return NextResponse.json({ count: 1337 });
   }

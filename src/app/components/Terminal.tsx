@@ -18,10 +18,7 @@ interface HistoryItem {
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Initialize AI model on load
-    loadModel();
-  }, []);
+
 
   // Trigger ghost typing when input is exactly "/ai" or "/ai "
   useEffect(() => {
@@ -335,6 +332,11 @@ interface HistoryItem {
         break;
 
       case '/ai':
+        if (isMobile) {
+             updateOutput('ai cannot be loaded due to insuffient local compute on mobile browsers');
+             return;
+        }
+
         const userQuery = args.join(' ');
         if (!userQuery) {
             updateOutput('usage: /ai [query]');
@@ -729,6 +731,7 @@ Otherwise, answer concisely and helpfully.`;
 
   const [browserInfo, setBrowserInfo] = useState('Detecting...');
   const [visitCount, setVisitCount] = useState('0');
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Browser detection
@@ -750,6 +753,15 @@ Otherwise, answer concisely and helpfully.`;
       browser = 'Apple Safari';
     }
     setBrowserInfo(browser);
+
+    // Mobile detection
+    const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    setIsMobile(mobileCheck);
+
+    // Initialize AI model on load ONLY if not mobile
+    if (!mobileCheck) {
+        loadModel();
+    }
 
     // Fetch visit count from serverless API
     const fetchVisits = async () => {
@@ -788,6 +800,7 @@ Otherwise, answer concisely and helpfully.`;
                            |___/
   `;
   const getAiStatus = () => {
+      if (isMobile) return 'ai cannot be loaded due to insuffient local compute on mobile browsers, open in desktop browser.';
       if (isModelLoaded) return 'Online (Ready)';
       if (!aiProgress) return 'Initializing...';
       const match = aiProgress.match(/(\d+)%/);

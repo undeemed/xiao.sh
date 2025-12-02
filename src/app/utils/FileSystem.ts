@@ -68,7 +68,9 @@ export const fileSystem: FileSystemNode = {
       type: 'directory',
       children: {
         'biography.txt': { type: 'file', content: `Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and pursuing a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Currently pursuing full-stack development with a focus on technical product management, strategy and design. Fluent in Mandarin Cantonese, and English. Enjoys Motorsports, Taekwondo, Boxing, and Calisthenics. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information.` },
-        'projects.md': { type: 'file', content: `Top 3:
+        'projects.md': { type: 'file', content: `
+Hackathons:
+Top 3:
 - [WebBrain](https://github.com/shlawgathon/WebBrain): AI Browser History Recall - chat with your history, describe something you've seen before online and AI will recall for you. [LinkedIn](https://www.linkedin.com/posts/xiaojerry_i-had-lots-of-fun-at-the-mongodb-agentic-activity-7383038759665164288-yzTn?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEerNM8BaiLwsyO2-11sjJzKRTO2VXWvfD4)
 ---
 Finalist:
@@ -81,18 +83,32 @@ Sad:
         'context.md': { type: 'file', content: `Additional Context:
 (Add any extra details here that you want the AI to know about you, your work, or specific topics. The AI will read this file and use it to answer questions.)
 
-- My motorcycle is a 2024 Yamaha YZF R7, it has 8k miles and carbon fairings.
-- I have a sister who is 2 years younger than me.
-- My cat is named Mida and he is an american shorthair.
-- My dog is named Mocha and he is a kuroshiba-Inu mix.
-- I have a black belt in taekwondo.
-- My birthday is 09/30/2007.
-- I have been coding since highschool.
-- I am an Introvert.
-- I play Mincraft, Wuthering Waves, and OSU.
-- I have 192 Winstreak in Minecraft Hypixel Duels.
-- I was top 4% in OSU circle.
-- I played piano for a year and got grade 2 certification.
+- Technologies I am proficient in:
+  - Python
+  - TypeScript
+  - Next.js
+  - React
+  - Tailwind CSS
+  - MongoDB
+  - Github/Git 
+  - AWS
+  - Docker
+  - HTML
+  - Swift
+
+- Niche things that should only be mentioned when asked specifically:
+  - My motorcycle is a 2024 Yamaha YZF R7, it has 8k miles and carbon fairings.
+  - I have a sister who is 2 years younger than me.
+  - My cat is named Mida and he is an american shorthair.
+  - My dog is named Mocha and he is a kuroshiba-Inu mix.
+  - I have a black belt in taekwondo.
+  - My birthday is 09/30/2007.
+  - I have been coding since highschool.
+  - I am an Introvert.
+  - I play Mincraft, Wuthering Waves, and OSU.
+  - I have 192 Winstreak in Minecraft Hypixel Duels.
+  - I was top 4% in OSU circle.
+  - I played piano for a year and got grade 2 certification.
 
 ` },
       }

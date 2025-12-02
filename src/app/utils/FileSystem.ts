@@ -1,3 +1,5 @@
+import buildInfo from '../data/build-info.json';
+
 export type FileType = 'file' | 'directory' | 'link' | 'executable';
 
 export interface FileSystemNode {
@@ -39,7 +41,7 @@ export const fileSystem: FileSystemNode = {
     analytics: {
       type: 'directory',
       children: {
-        'date-updated.sh': { type: 'file', content: 'Last updated: Dec 1, 2025' },
+        'date-updated.sh': { type: 'file', content: `Last updated: ${buildInfo.lastUpdated}` },
         'total-uptime.sh': { 
             type: 'executable', 
             action: () => { 

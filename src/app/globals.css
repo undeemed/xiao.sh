@@ -19,10 +19,10 @@
 }
 
 /* Manual toggle overrides */
+/* Manual toggle overrides */
 body.light-mode {
-  --background: #ffffff;
-  --foreground: #000000;
-  --accent: #e0e0e0;
+  filter: invert(1) hue-rotate(180deg);
+  background-color: #000000; /* Ensure background stays black for inversion to work correctly */
 }
 
 body.dark-mode {

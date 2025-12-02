@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { fileSystem, FileSystemNode } from '../utils/FileSystem';
 import { useLLM, SELECTED_MODEL } from '../hooks/useLLM';
+import buildInfo from '../data/build-info.json';
 
 interface HistoryItem {
   command: string;
@@ -642,7 +643,7 @@ Otherwise, answer concisely and helpfully.`;
                           output = 'Switched to Light Mode.';
                       }
                   } else if (potentialNode.action) {
-                      const result = potentialNode.action();
+                      const result = await potentialNode.action();
                       output = result;
                   }
              } else {
@@ -801,7 +802,7 @@ Otherwise, answer concisely and helpfully.`;
   `;
   const getAiStatus = () => {
       if (isMobile) return 'ai cannot be loaded due to insuffient local compute on mobile browsers, open in desktop browser.';
-      if (isModelLoaded) return 'Online (Ready)';
+      if (isModelLoaded) return 'Ready';
       if (!aiProgress) return 'Initializing...';
       const match = aiProgress.match(/(\d+)%/);
       return match ? `Loading... ${match[1]}%` : 'Initializing...';
@@ -810,22 +811,9 @@ Otherwise, answer concisely and helpfully.`;
   const aiStatus = getAiStatus();
 
   const [timeSpent, setTimeSpent] = useState('0s');
-  const [totalUptime, setTotalUptime] = useState('Calculating...');
 
   useEffect(() => {
       const startTime = Date.now();
-      let siteStartTime = Date.now();
-
-      // Fetch site start time
-      fetch('/api/uptime')
-          .then(res => res.json())
-          .then(data => {
-              if (data.startTime) {
-                  siteStartTime = data.startTime;
-              }
-          })
-          .catch(err => console.error('Failed to fetch uptime:', err));
-
       const timer = setInterval(() => {
           // Session Time
           const diff = Date.now() - startTime;
@@ -839,22 +827,6 @@ Otherwise, answer concisely and helpfully.`;
           timeStr += `${seconds}s`;
           
           setTimeSpent(timeStr);
-
-          // Total Uptime
-          const totalDiff = Date.now() - siteStartTime;
-          const tSeconds = Math.floor((totalDiff / 1000) % 60);
-          const tMinutes = Math.floor((totalDiff / (1000 * 60)) % 60);
-          const tHours = Math.floor((totalDiff / (1000 * 60 * 60)) % 24);
-          const tDays = Math.floor(totalDiff / (1000 * 60 * 60 * 24));
-
-          let totalStr = '';
-          if (tDays > 0) totalStr += `${tDays}d `;
-          if (tHours > 0 || tDays > 0) totalStr += `${tHours}h `;
-          if (tMinutes > 0 || tHours > 0 || tDays > 0) totalStr += `${tMinutes}m `;
-          totalStr += `${tSeconds}s`;
-          
-          setTotalUptime(totalStr);
-
       }, 1000);
       return () => clearInterval(timer);
   }, []);
@@ -870,12 +842,27 @@ Otherwise, answer concisely and helpfully.`;
       return () => window.removeEventListener('resize', updateResolution);
   }, []);
 
+  const [timeSinceUpdate, setTimeSinceUpdate] = useState('Calculating...');
+
+  useEffect(() => {
+      const updateTimeSince = () => {
+          const now = Date.now();
+          const diff = now - buildInfo.timestamp;
+          const seconds = Math.floor(diff / 1000);
+          setTimeSinceUpdate(`${seconds}s`);
+      };
+
+      updateTimeSince();
+      const timer = setInterval(updateTimeSince, 1000);
+      return () => clearInterval(timer);
+  }, []);
+
   const neofetchInfo = [
     { label: 'Browser', value: browserInfo },
     { label: 'Host', value: 'xiao.sh' },
     { label: 'Kernel', value: 'Next.js 16.0.6' },
     { label: 'Visits', value: visitCount },
-    { label: 'Total Uptime', value: totalUptime },
+    { label: 'Last Updated', value: timeSinceUpdate + ' ago' },
     { label: 'Session Time', value: timeSpent },
     { label: 'Shell', value: 'Zsh' },
     { label: 'Resolution', value: resolution },
@@ -924,7 +911,7 @@ Otherwise, answer concisely and helpfully.`;
 
       const texts = [
           "Hi, I'm Jerry, I have a dog, cat, and a motorcycle. I am a current freshman at Northeastern University studying Computer Science with a concentration in AI and a minor in Business. I do stuff in Python, TypeScript, and will make progress on Java. Currently pursuing full-stack development with a focus on technical product management, strategy and design. I'm fluent in Mandarin, Cantonese, and English. I enjoy Taekwondo, Boxing, and Calisthenics. Feel free to email me about anything! For my HR folks: do /ai (any request here) and it will pull up any available information. You can ask the AI about *anything*.",
-          "If you are going to try, go all the way. Otherwise, don’t even start. If you are going to try, go all the way. This can mean losing girlfriends, wives, relatives, jobs, and maybe your mind. Go all the way. It can mean not eating for three or four days. It can mean freezing on a park bench. It can mean jail. It can mean derision, mockery, isolation. Isolation is the gift. All the others are a test of your endurance—how much you really want to do it. And you’ll do it, despite rejection and the worst odds. And it’ll be better than anything you can imagine. If you’re going to try, go all the way. There’s no other feeling like that. You’ll be alone with the gods, and the nights will flame with fire. Do it. Do it. All the way. All the way. You will ride life straight to perfect laughter. It’s the only good fight there is."
+          "\"If you are going to try, go all the way. Otherwise, don’t even start. If you are going to try, go all the way. This can mean losing girlfriends, wives, relatives, jobs, and maybe your mind. Go all the way. It can mean not eating for three or four days. It can mean freezing on a park bench. It can mean jail. It can mean derision, mockery, isolation. Isolation is the gift. All the others are a test of your endurance—how much you really want to do it. And you’ll do it, despite rejection and the worst odds. And it’ll be better than anything you can imagine. If you’re going to try, go all the way. There’s no other feeling like that. You’ll be alone with the gods, and the nights will flame with fire. Do it. Do it. All the way. All the way. You will ride life straight to perfect laughter. It’s the only good fight there is.\" - Charles Bukowski"
       ];
 
       let textIndex = 0;

@@ -7,7 +7,7 @@ export interface FileSystemNode {
   content?: string; // For files
   children?: { [key: string]: FileSystemNode }; // For directories
   target?: string; // For links (e.g., redirects)
-  action?: () => React.ReactNode | string; // For executable scripts
+  action?: () => Promise<React.ReactNode | string> | React.ReactNode | string; // For executable scripts
 }
 
 const startTime = new Date().getTime();
@@ -44,18 +44,26 @@ export const fileSystem: FileSystemNode = {
         'date-updated.sh': { type: 'file', content: `Last updated: ${buildInfo.lastUpdated}` },
         'total-uptime.sh': { 
             type: 'executable', 
-            action: () => { 
-                const now = new Date().getTime();
-                const diff = now - startTime;
-                
-                const milliseconds = diff % 1000;
-                const seconds = Math.floor((diff / 1000) % 60);
-                const minutes = Math.floor((diff / (1000 * 60)) % 60);
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 365);
-                const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+            action: async () => { 
+                try {
+                    const res = await fetch('/api/uptime');
+                    const data = await res.json();
+                    const startTime = data.startTime || new Date().getTime();
+                    
+                    const now = new Date().getTime();
+                    const diff = now - startTime;
+                    
+                    const milliseconds = diff % 1000;
+                    const seconds = Math.floor((diff / 1000) % 60);
+                    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 365);
+                    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
 
-                return `Uptime: ${years}y:${days}d:${hours}h:${minutes}m:${seconds}s:${milliseconds}ms`;
+                    return `Uptime: ${years}y:${days}d:${hours}h:${minutes}m:${seconds}s:${milliseconds}ms`;
+                } catch (e) {
+                    return 'Failed to fetch uptime.';
+                }
             } 
         },
       }
@@ -85,9 +93,7 @@ Sad:
         'context.md': { type: 'file', content: `Additional Context:
 (Add any extra details here that you want the AI to know about you, your work, or specific topics. The AI will read this file and use it to answer questions.)
 
-- Technologies I am proficient in:
-  - Python
-  - TypeScript
+- I am also proficient in:
   - Next.js
   - React
   - Tailwind CSS
@@ -95,7 +101,6 @@ Sad:
   - Github/Git 
   - AWS
   - Docker
-  - HTML
   - Swift
 
 - Niche things that should only be mentioned when asked specifically:

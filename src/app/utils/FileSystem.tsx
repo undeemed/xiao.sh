@@ -128,7 +128,7 @@ Sad:
         'photos.sh': {
           type: 'executable',
           action: () => {
-            return <ImageTrack onClose={() => {}} />;
+            return <ImageTrack />;
           }
         }
       }

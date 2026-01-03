@@ -13,6 +13,7 @@ interface HistoryItem {
   const { chat, isModelLoaded, loadModel, isLoading: isAiLoading, progress: aiProgress, error: aiError, mode: aiMode, currentModel } = useLLM();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [input, setInput] = useState('');
+  const [cursorPos, setCursorPos] = useState(0);
   const [isGhostTyping, setIsGhostTyping] = useState(false);
   const ghostTypingRef = useRef<NodeJS.Timeout | null>(null);
   const [currentPath, setCurrentPath] = useState<string[]>([]); // Root is empty array
@@ -712,7 +713,9 @@ Otherwise, answer concisely and helpfully.`;
         
         const newIndex = historyIndex === null ? history.length - 1 : Math.max(0, historyIndex - 1);
         setHistoryIndex(newIndex);
-        setInput(history[newIndex].command);
+        const cmd = history[newIndex].command;
+        setInput(cmd);
+        setCursorPos(cmd.length);
     } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         if (historyIndex === null) return;
@@ -721,9 +724,12 @@ Otherwise, answer concisely and helpfully.`;
         if (newIndex >= history.length) {
             setHistoryIndex(null);
             setInput('');
+            setCursorPos(0);
         } else {
             setHistoryIndex(newIndex);
-            setInput(history[newIndex].command);
+            const cmd = history[newIndex].command;
+            setInput(cmd);
+            setCursorPos(cmd.length);
         }
     } else if (e.key === 'Tab') {
         e.preventDefault();
@@ -1031,16 +1037,25 @@ Otherwise, answer concisely and helpfully.`;
             ref={inputRef}
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+                setInput(e.target.value);
+                setCursorPos(e.target.selectionStart || 0);
+            }}
             onKeyDown={handleKeyDown}
+            onSelect={(e) => setCursorPos(e.currentTarget.selectionStart || 0)}
+            onClick={(e) => setCursorPos(e.currentTarget.selectionStart || 0)}
+            onKeyUp={(e) => setCursorPos(e.currentTarget.selectionStart || 0)}
             className="absolute inset-0 w-full h-full opacity-0 cursor-text"
             autoFocus
             autoComplete="off"
             spellCheck="false"
             />
             <span className="whitespace-pre-wrap break-all">
-                {input}
-                <span className="inline-block w-2.5 h-5 bg-gray-400 ml-0.5 align-middle animate-pulse"></span>
+                {input.slice(0, cursorPos)}
+                <span className="inline-block min-w-[10px] bg-gray-400 text-black animate-pulse align-middle">
+                    {input[cursorPos] || '\u00A0'}
+                </span>
+                {input.slice(cursorPos + 1)}
             </span>
         </div>
       </div>

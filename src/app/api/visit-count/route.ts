@@ -11,17 +11,8 @@ export async function GET(request: Request) {
 
     await redis.connect();
 
-    // Extract IP address
-    const forwardedFor = request.headers.get('x-forwarded-for');
-    const ip = forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
-
-    // Add IP to unique visitors set
-    if (ip !== 'unknown') {
-        await redis.sAdd('unique_visitors', ip);
-    }
-    
-    // Get total unique visitors
-    const count = await redis.sCard('unique_visitors');
+    // Increment visit counter on every request
+    const count = await redis.incr('visit_count');
     
     await redis.disconnect();
     

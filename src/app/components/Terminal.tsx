@@ -334,10 +334,6 @@ interface HistoryItem {
         break;
 
       case '/ai':
-        if (isMobile) {
-             updateOutput('ai cannot be loaded due to insuffient local compute on mobile browsers');
-             return;
-        }
 
         const userQuery = args.join(' ');
         if (!userQuery) {
@@ -387,7 +383,7 @@ interface HistoryItem {
 
         updateOutput(
             <div className="text-yellow-400">
-                {isModelLoaded ? 'Thinking...' : (aiProgress ? loadingBar(aiProgress) : 'Initializing AI Model...')}
+                {aiProgress || 'Processing...'}
             </div>
         );
 
@@ -452,10 +448,20 @@ Current Date & Time: ${new Date().toLocaleString()}
 User Current Path: ${getPathString(currentPath)}
 
 USER BIOGRAPHY:
+${githubData ? `Name: ${githubData.name}
+Bio: ${githubData.bio}
+Location: ${githubData.location}
+Company: ${githubData.company}
+Public Repos: ${githubData.public_repos}
+Followers: ${githubData.followers}` : ''}
+
+ADDITIONAL PERSONAL DETAILS:
 ${bioContent}
 
 USER PROJECTS:
-${projectsContent}
+${githubData && githubData.top_projects ? githubData.top_projects.map((p: any) => 
+`* ${p.name}: ${p.description || 'No description'} (${p.language}) - ${p.url} (Stars: ${p.stars})`
+).join('\n') : projectsContent}
 
 ADDITIONAL CONTEXT:
 ${contextContent}
@@ -736,6 +742,7 @@ Otherwise, answer concisely and helpfully.`;
   const [browserInfo, setBrowserInfo] = useState('Detecting...');
   const [visitCount, setVisitCount] = useState('0');
   const [isMobile, setIsMobile] = useState(false);
+  const [githubData, setGithubData] = useState<any>(null);
 
   useEffect(() => {
     // Browser detection
@@ -762,11 +769,8 @@ Otherwise, answer concisely and helpfully.`;
     const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
     setIsMobile(mobileCheck);
 
-    // Initialize AI model on load ONLY if not mobile
-    if (!mobileCheck) {
-        loadModel();
-    }
 
+    // No longer auto-loading local model - cloud API is used first, local is fallback
     // Fetch visit count from serverless API
     const fetchVisits = async () => {
         try {
@@ -788,6 +792,18 @@ Otherwise, answer concisely and helpfully.`;
 
     fetchVisits();
 
+    // Fetch GitHub data for AI context
+    const fetchGithub = async () => {
+        try {
+            const res = await fetch('/api/github');
+            const data = await res.json();
+            setGithubData(data);
+        } catch (error) {
+            console.error('Failed to fetch GitHub data:', error);
+        }
+    };
+    fetchGithub();
+
     // Simulate boot sequence or just show neofetch
     const timer = setTimeout(() => {
         // Optional: could add a boot sequence here
@@ -804,11 +820,12 @@ Otherwise, answer concisely and helpfully.`;
                            |___/
   `;
   const getAiStatus = () => {
-      if (isMobile) return 'ai cannot be loaded due to insuffient local compute on mobile browsers, open in desktop browser.';
-      if (isModelLoaded) return 'Ready';
-      if (!aiProgress) return 'Initializing...';
-      const match = aiProgress.match(/(\d+)%/);
-      return match ? `Loading... ${match[1]}%` : 'Initializing...';
+      // Cloud API is always "online" - local model status only matters as fallback
+      if (aiProgress && aiProgress.includes('%')) {
+          const match = aiProgress.match(/(\d+)%/);
+          return match ? `Loading local fallback... ${match[1]}%` : aiProgress;
+      }
+      return 'Online';
   };
   
   const aiStatus = getAiStatus();
@@ -871,8 +888,8 @@ Otherwise, answer concisely and helpfully.`;
     { label: 'Resolution', value: resolution },
     { label: 'Theme', value: 'Dark Neon' },
     { label: 'Font', value: 'Menlo' },
-    { label: 'AI Mode', value: aiMode === 'cloud' ? '☁️ Cloud (OpenRouter)' : (aiMode === 'local' ? '💻 Local (WebLLM)' : 'Idle') },
-    { label: 'AI Model', value: currentModel || SELECTED_MODEL },
+    { label: 'AI Mode', value: aiMode === 'cloud' ? 'Cloud (OpenRouter)' : (aiMode === 'local' ? 'Local (WebLLM)' : 'Idle') },
+    { label: 'AI Model', value: currentModel || 'Not loaded (use /ai to start)' },
     { label: 'AI Status', value: aiStatus },
   ];
 

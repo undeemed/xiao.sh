@@ -10,7 +10,7 @@ interface HistoryItem {
   output: React.ReactNode;
   path: string;
 }export default function Terminal() {
-  const { chat, isModelLoaded, loadModel, isLoading: isAiLoading, progress: aiProgress, error: aiError } = useLLM();
+  const { chat, isModelLoaded, loadModel, isLoading: isAiLoading, progress: aiProgress, error: aiError, mode: aiMode, currentModel } = useLLM();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [input, setInput] = useState('');
   const [isGhostTyping, setIsGhostTyping] = useState(false);
@@ -871,8 +871,9 @@ Otherwise, answer concisely and helpfully.`;
     { label: 'Resolution', value: resolution },
     { label: 'Theme', value: 'Dark Neon' },
     { label: 'Font', value: 'Menlo' },
-    { label: 'Local LLM', value: SELECTED_MODEL },
-    { label: 'Local LLM Status', value: aiStatus },
+    { label: 'AI Mode', value: aiMode === 'cloud' ? '☁️ Cloud (OpenRouter)' : (aiMode === 'local' ? '💻 Local (WebLLM)' : 'Idle') },
+    { label: 'AI Model', value: currentModel || SELECTED_MODEL },
+    { label: 'AI Status', value: aiStatus },
   ];
 
   const [neofetchStep, setNeofetchStep] = useState(0);
@@ -971,7 +972,7 @@ Otherwise, answer concisely and helpfully.`;
                     <span className={`inline-block w-2 h-4 bg-gray-400 ml-1 align-middle ${isCursorVisible ? 'opacity-100' : 'opacity-0'}`}></span>
                 </div>
             </div>
-            <div className="flex flex-col justify-start min-w-[200px]">
+            <div className="flex flex-col justify-start min-w-[200px] flex-shrink-0">
                 <div className={`mb-0 transition-opacity duration-300 ${neofetchStep >= 2 ? 'opacity-100' : 'opacity-0'}`}>
                     <span className="text-green-400 font-bold">guest</span>@<span className="text-green-400 font-bold">xiao.sh</span>
                 </div>

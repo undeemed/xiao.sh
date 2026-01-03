@@ -575,7 +575,12 @@ Otherwise, answer concisely and helpfully.`;
                     const resolved = resolvePath(actionPath);
                     const node = getCurrentNode(resolved);
                     if (node && node.type === 'link' && node.target) {
-                        window.open(node.target, '_blank');
+                        // Prevent blank tab for mailto links
+                        if (node.target.startsWith('mailto:')) {
+                            window.location.href = node.target;
+                        } else {
+                            window.open(node.target, '_blank');
+                        }
                     }
                 });
             }
@@ -595,7 +600,7 @@ Otherwise, answer concisely and helpfully.`;
                             <div className="text-cyan-400">
                                 Executed: Composing email to {email.to}...
                                 <br/>
-                                <a href={mailtoLink} target="_blank" rel="noopener noreferrer" className="text-yellow-400 underline hover:text-yellow-300 cursor-pointer">
+                                <a href={mailtoLink} className="text-yellow-400 underline hover:text-yellow-300 cursor-pointer">
                                     (Click here if it didn't open automatically)
                                 </a>
                             </div>

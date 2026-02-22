@@ -1,93 +1,92 @@
-# xiao.sh - OpenTUI Portfolio
+# xiao.sh
 
-Terminal-first portfolio built with [`@opentui/core`](https://github.com/anomalyco/opentui/tree/main/packages/core).
-
-## Stack
-
-- Bun
-- TypeScript
-- `@opentui/core`
-- Optional Convex metrics store
+Minimal portfolio built with Next.js, TypeScript, React, and Tailwind CSS.
 
 ## Local development
 
 ```bash
-npm install
+bun install
 bun run dev
 ```
 
-## Controls
+Open `http://localhost:3000`.
 
-- `Tab`: switch focus between section list and item list
-- `Arrow keys`: move selection
-- `Enter` or `O`: open selected link
-- `R`: refresh projects from GitHub
-- `1-4`: jump to section
-- `Q`: quit
+## OpenRouter (AI Search)
 
-## Environment
+The `Ask AI` button in the search section uses OpenRouter.
 
-Copy `.env.example` to `.env` and configure:
+1. Copy `.env.example` to `.env.local`
+2. Set `OPENROUTER_API_KEY`
+3. Optional: tune model rotation
 
-- `GITHUB_TOKEN` (optional): higher GitHub API rate limits
-- `CONVEX_URL` (optional): persist launch count and uptime
-- `OPENTUI_FORCE_EXPLICIT_WIDTH=false` (optional): compatibility for terminals that do not support OSC 66
+Rotation behavior:
 
-## Convex function names
+- The API route fetches the latest free models from OpenRouter (`/api/v1/models`)
+- It ranks/selects a pool of free text models and rotates the primary model per request
+- It sends fallback models in the same request so OpenRouter can auto-failover
 
-When `CONVEX_URL` is set, the app calls:
+Useful env vars:
 
-- `portfolio:trackVisit`
-- `portfolio:getSiteStartTime`
+- `OPENROUTER_MODELS` (comma-separated preferred models, prepended to rotation)
+- `OPENROUTER_DYNAMIC_MODELS` (`true`/`false`, default `true`)
+- `OPENROUTER_MODEL_POOL_SIZE` (default `8`)
+- `OPENROUTER_MODELS_REFRESH_MS` (default `900000`, i.e. 15 min)
 
-Without Convex, it falls back to local in-memory state.
-
-## Hosting on Raspberry Pi with xiao.sh
-
-This app is not serverless-friendly (it is an interactive terminal process).  
-Recommended setup:
-
-- Run app locally on Pi behind `ttyd`
-- Expose via Cloudflare Tunnel on `xiao.sh`
-- Protect with Cloudflare Access
-
-### 1) Run web terminal locally
+## Build
 
 ```bash
-ttyd -i 127.0.0.1 -p 7681 -W bun run src/tui/index.ts
+bun run build
+bun run start
 ```
 
-### 2) Route `xiao.sh` through Cloudflare Tunnel
+## Pull LinkedIn Post Images
 
-- Create a Cloudflare Tunnel in Zero Trust
-- Publish hostname `xiao.sh` (or `tui.xiao.sh`) to `http://localhost:7681`
-- Enable Cloudflare Access policy for your identity
-
-### 3) Keep it running with systemd
-
-Create `/etc/systemd/system/xiao-tui.service`:
-
-```ini
-[Unit]
-Description=xiao.sh OpenTUI via ttyd
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-User=pi
-WorkingDirectory=/home/pi/xiao.sh
-EnvironmentFile=/home/pi/xiao.sh/.env
-ExecStart=/usr/bin/ttyd -i 127.0.0.1 -p 7681 -W /home/pi/.bun/bin/bun run src/tui/index.ts
-Restart=always
-RestartSec=2
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Then:
+To fetch all available images/video-thumbnails from each LinkedIn-linked project post:
 
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now xiao-tui
+bun run fetch:linkedin-assets
 ```
+
+Output:
+
+- Assets: `public/projects/choices/<owner-repo>/`
+- Index: `public/projects/choices/manifest.json`
+
+## Sync LinkedIn About Data (Playwright)
+
+The `/about` page and AI context read from a Playwright-generated LinkedIn snapshot.
+
+```bash
+bun run sync:linkedin
+```
+
+Output:
+
+- Snapshot: `src/data/linkedin-about.json`
+
+Notes:
+
+- The sync script now attempts full profile section scraping (`details/experience`, `details/education`, `details/skills`, etc.), following the same model used by modern Playwright LinkedIn scrapers.
+- LinkedIn requires auth for full profile section access. Set `LINKEDIN_COOKIE_LI_AT` in `.env.local` to include those sections in the snapshot.
+- You can also point to a Playwright session file via `LINKEDIN_STORAGE_STATE_PATH` (compatible with `joeyism/linkedin_scraper` session flow).
+- Without auth cookies, the script falls back to public metadata and LinkedIn post-derived context.
+
+Quick session setup:
+
+```bash
+bun run create:linkedin-session
+```
+
+Then set in `.env.local`:
+
+```bash
+LINKEDIN_STORAGE_STATE_PATH=/absolute/path/to/linkedin-session.json
+```
+
+## Edit content
+
+- About section: `src/app/page.tsx`
+- LinkedIn about page: `src/app/about/page.tsx`
+- LinkedIn snapshot loader: `src/lib/linkedin.ts`
+- Project cards and images: `src/lib/projects.ts`
+- Search/card UI: `src/components/project-search.tsx`

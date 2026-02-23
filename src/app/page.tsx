@@ -1,10 +1,15 @@
+"use client";
+
 import ProjectSearch from "@/components/project-search";
 import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-5 py-10 md:px-8 md:py-12">
       <header className="mb-6 border border-[var(--line)] bg-[var(--panel-2)] p-4 md:p-5">
@@ -44,14 +49,20 @@ export default function Home() {
               CS @ {profile.education} class of 2029. {profile.bio} This site keeps things minimal: quick context,
               searchable projects, and direct links. Take a look at the stuff I've worked on below :)
             </p>
-            <ProjectSearch projects={projects} mode="search" className="mt-4 max-w-3xl" />
+            <ProjectSearch
+              projects={projects}
+              mode="search"
+              className="mt-4 max-w-3xl"
+              query={searchQuery}
+              onQueryChange={setSearchQuery}
+            />
           </div>
 
           <SpotifyNowPlaying className="w-full max-w-[18rem] md:justify-self-end md:mt-2 md:w-[18rem] md:max-w-none" />
         </div>
       </section>
 
-      <ProjectSearch projects={projects} mode="cards" className="mt-6" />
+      <ProjectSearch projects={projects} mode="cards" className="mt-6" query={searchQuery} />
     </main>
   );
 }

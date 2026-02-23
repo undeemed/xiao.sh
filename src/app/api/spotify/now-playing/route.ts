@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const SPOTIFY_NOW_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing";
@@ -63,7 +65,7 @@ async function getAccessToken() {
 function json(data: unknown) {
   return NextResponse.json(data, {
     headers: {
-      "Cache-Control": "public, s-maxage=10, stale-while-revalidate=30",
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
     },
   });
 }
@@ -122,4 +124,3 @@ export async function GET() {
     return json({ configured: true, isPlaying: false });
   }
 }
-

@@ -35,27 +35,60 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
   useEffect(() => {
     let cancelled = false;
     let timeoutId: number | null = null;
+    let requestInFlight = false;
 
     async function poll() {
+      if (requestInFlight) return;
+      requestInFlight = true;
+      let nextDelayMs = document.visibilityState === "visible" ? 8_000 : 30_000;
+
       try {
-        const response = await fetch("/api/spotify/now-playing", { cache: "no-store" });
+        const response = await fetch(`/api/spotify/now-playing?ts=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        });
         const next = (await response.json()) as NowPlayingResponse;
         if (cancelled) return;
         setData(next);
 
-        if (next?.configured !== true) return;
-        timeoutId = window.setTimeout(poll, next?.isPlaying ? 15_000 : 60_000);
+        if (document.visibilityState !== "visible") {
+          nextDelayMs = 30_000;
+        } else if (next?.configured !== true) {
+          nextDelayMs = 45_000;
+        } else {
+          nextDelayMs = next?.isPlaying ? 6_000 : 20_000;
+        }
       } catch {
         if (cancelled) return;
-        timeoutId = window.setTimeout(poll, 60_000);
+        nextDelayMs = document.visibilityState === "visible" ? 20_000 : 45_000;
+      } finally {
+        requestInFlight = false;
+        if (!cancelled) {
+          timeoutId = window.setTimeout(poll, nextDelayMs);
+        }
+      }
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        if (timeoutId) {
+          window.clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+        void poll();
       }
     }
 
     poll();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       cancelled = true;
       if (timeoutId) window.clearTimeout(timeoutId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 

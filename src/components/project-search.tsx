@@ -9,6 +9,8 @@ type ProjectSearchProps = {
   projects: Project[];
   mode?: "full" | "search" | "cards";
   className?: string;
+  query?: string;
+  onQueryChange?: (value: string) => void;
 };
 
 const GHOST_SUGGESTIONS = [
@@ -48,15 +50,29 @@ function scoreProject(project: Project, terms: string[]) {
   return score;
 }
 
-export default function ProjectSearch({ projects, mode = "full", className = "" }: ProjectSearchProps) {
+export default function ProjectSearch({
+  projects,
+  mode = "full",
+  className = "",
+  query: controlledQuery,
+  onQueryChange,
+}: ProjectSearchProps) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [internalQuery, setInternalQuery] = useState("");
   const [suggestionIndex, setSuggestionIndex] = useState(0);
   const [typedChars, setTypedChars] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const showSearch = mode !== "cards";
   const showCards = mode !== "search";
+  const query = controlledQuery ?? internalQuery;
   const hasInput = query.trim().length > 0;
+
+  function setQuery(next: string) {
+    if (controlledQuery === undefined) {
+      setInternalQuery(next);
+    }
+    onQueryChange?.(next);
+  }
   const helperText =
     mode === "full"
       ? "Press Enter or send to open chat. Typing also filters project cards below."

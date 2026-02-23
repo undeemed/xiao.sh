@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import LiveWallpaper from "@/components/live-wallpaper";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
@@ -19,8 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} antialiased`}>{children}</body>
+      <body className={`${spaceGrotesk.variable} antialiased`}>
+        <LiveWallpaper />
+        <div className="live-wallpaper-dim" aria-hidden="true" />
+        <div className="app-shell">{children}</div>
+      </body>
     </html>
   );
 }
-

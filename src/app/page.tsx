@@ -37,9 +37,9 @@ export default function Home() {
       <section id="about" className="border border-[var(--line)] bg-[var(--panel)] p-6 md:p-8">
         <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Hello I&apos;m</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">{profile.name}</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)] md:text-base">
-          {profile.education}. {profile.bio} This site keeps things minimal: quick context,
-          searchable projects, and direct links.
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--muted)] md:text-base">
+          CS @ {profile.education} class of 2029. {profile.bio} This site keeps things minimal: quick context,
+          searchable projects, and direct links. Take a look at the stuff I've worked on below :)
         </p>
       </section>
 

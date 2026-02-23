@@ -185,12 +185,22 @@ export default async function AboutPage() {
         <div className="mt-4 space-y-3">
           {topPosts.map((post) => (
             <article key={post.url} className="border border-[var(--line)] bg-[var(--panel-2)] p-4">
-              <h2 className="text-sm font-medium tracking-tight md:text-base">
-                {truncate(post.headline || "LinkedIn Post", 120)}
-              </h2>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[var(--muted)]">
-                {formatDate(post.publishedAt) ?? "Date unavailable"}
-              </p>
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-sm font-medium tracking-tight md:text-base">
+                  {truncate(post.headline || "LinkedIn Post", 120)}
+                </h2>
+                {post.publishedAt && (
+                  <span className="shrink-0 text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+                    {formatDate(post.publishedAt)}
+                  </span>
+                )}
+              </div>
+
+              {post.excerpt && (
+                <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
+                  {truncate(post.excerpt, 200)}
+                </p>
+              )}
 
               <div className="mt-3 flex flex-wrap gap-2">
                 <a

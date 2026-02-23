@@ -15,22 +15,79 @@ type NowPlayingResponse = {
   };
 };
 
+type TrackSnapshot = {
+  name: string;
+  artists: string[];
+  album?: string | null;
+  imageUrl?: string | null;
+  songUrl?: string | null;
+};
+
+const LAST_TRACK_STORAGE_KEY = "xiao.sh:spotify:last-track:v1";
+
+function normalizeTrack(track: NowPlayingResponse["track"]): TrackSnapshot | null {
+  if (!track?.name || typeof track.name !== "string") return null;
+
+  return {
+    name: track.name,
+    artists: Array.isArray(track.artists) ? track.artists.filter(Boolean) : [],
+    album: track.album ?? null,
+    imageUrl: track.imageUrl ?? null,
+    songUrl: track.songUrl ?? null,
+  };
+}
+
 export default function SpotifyNowPlaying(props: { className?: string }) {
   const [data, setData] = useState<NowPlayingResponse | null>(null);
+  const [lastTrack, setLastTrack] = useState<TrackSnapshot | null>(null);
+  const [scrollRotation, setScrollRotation] = useState(0);
 
   const configured = data?.configured === true;
   const isPlaying = configured && data?.isPlaying === true;
-  const trackName = data?.track?.name ?? null;
-  const artists = data?.track?.artists ?? [];
-  const songUrl = data?.track?.songUrl ?? null;
-  const imageUrl = data?.track?.imageUrl ?? null;
+  const currentTrack = normalizeTrack(data?.track);
+  const displayTrack = currentTrack ?? (!isPlaying ? lastTrack : null);
+  const trackName = displayTrack?.name ?? null;
+  const artists = displayTrack?.artists ?? [];
+  const songUrl = displayTrack?.songUrl ?? null;
+  const imageUrl = currentTrack?.imageUrl ?? lastTrack?.imageUrl ?? null;
 
   const subtitle = useMemo(() => {
     if (!data) return "Loading";
-    if (!configured) return "Not connected";
-    if (!isPlaying || !trackName) return "Not playing";
+    if (!configured) {
+      if (lastTrack?.name) return "Offline - showing last played";
+      return "Not connected";
+    }
+    if (!isPlaying && trackName) return artists.length > 0 ? artists.join(", ") : "Last played";
+    if (!isPlaying || !trackName) return "Offline";
     return artists.length > 0 ? artists.join(", ") : "Playing";
-  }, [artists, configured, data, isPlaying, trackName]);
+  }, [artists, configured, data, isPlaying, lastTrack?.name, trackName]);
+
+  const listeningStatus = useMemo(() => {
+    if (!data) return "Loading";
+    if (!configured) return "Offline";
+    if (isPlaying) return "Listening";
+    return "Offline";
+  }, [configured, data, isPlaying]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(LAST_TRACK_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Partial<TrackSnapshot>;
+      if (typeof parsed.name !== "string" || parsed.name.trim().length === 0) return;
+      setLastTrack({
+        name: parsed.name,
+        artists: Array.isArray(parsed.artists)
+          ? parsed.artists.filter((entry): entry is string => typeof entry === "string")
+          : [],
+        album: typeof parsed.album === "string" ? parsed.album : null,
+        imageUrl: typeof parsed.imageUrl === "string" ? parsed.imageUrl : null,
+        songUrl: typeof parsed.songUrl === "string" ? parsed.songUrl : null,
+      });
+    } catch {
+      // Ignore corrupt local cache.
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,6 +110,15 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
         const next = (await response.json()) as NowPlayingResponse;
         if (cancelled) return;
         setData(next);
+        const nextTrack = normalizeTrack(next.track);
+        if (nextTrack) {
+          setLastTrack(nextTrack);
+          try {
+            window.localStorage.setItem(LAST_TRACK_STORAGE_KEY, JSON.stringify(nextTrack));
+          } catch {
+            // Ignore storage write failures.
+          }
+        }
 
         if (document.visibilityState !== "visible") {
           nextDelayMs = 30_000;
@@ -92,17 +158,26 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
     };
   }, []);
 
+  useEffect(() => {
+    function updateRotation() {
+      setScrollRotation(window.scrollY * 0.18);
+    }
+
+    updateRotation();
+    window.addEventListener("scroll", updateRotation, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateRotation);
+    };
+  }, []);
+
   return (
     <div className={props.className}>
       <div className="relative aspect-square w-full border border-[var(--line)] bg-[var(--panel-2)] p-4">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgba(110,231,255,0.13),transparent_46%)]"
-          aria-hidden="true"
-        />
         <div className="relative flex h-full flex-col justify-between">
           <div className="flex items-center justify-between">
             <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
-              {isPlaying ? "Listening" : "Spotify"}
+              {listeningStatus}
             </p>
             <span
               className={[
@@ -120,15 +195,20 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
                   "absolute inset-0 overflow-hidden rounded-full border border-[var(--line)] bg-[var(--panel)]",
                   isPlaying ? "animate-spin" : "",
                 ].join(" ")}
-                style={isPlaying ? { animationDuration: "7s" } : undefined}
+                style={
+                  isPlaying
+                    ? { animationDuration: "7s" }
+                    : {
+                        transform: `rotate(${scrollRotation}deg)`,
+                      }
+                }
                 aria-hidden="true"
               >
                 {imageUrl ? (
                   <Image src={imageUrl} alt="" fill sizes="112px" className="object-cover" />
                 ) : (
-                  <div className="h-full w-full bg-[radial-gradient(circle_at_30%_30%,rgba(110,231,255,0.22),transparent_55%),radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.06),transparent_60%)]" />
+                  <div className="h-full w-full bg-[var(--panel)]" />
                 )}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.12),transparent_55%)]" />
               </div>
               <div
                 className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--panel-2)] ring-1 ring-white/15"
@@ -139,18 +219,22 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
 
           <div className="min-w-0 border-t border-[var(--line)] pt-3">
             <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
-              {isPlaying ? "Now Playing" : "Status"}
+              {isPlaying ? "Now Playing" : trackName ? "Last Played" : "Status"}
             </p>
-            {songUrl && trackName ? (
-              <a
-                href={songUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-1 block truncate text-sm text-[var(--text)] hover:text-[var(--accent)]"
-                title={`${trackName}${artists.length ? ` — ${artists.join(", ")}` : ""}`}
-              >
-                {trackName}
-              </a>
+            {trackName ? (
+              songUrl ? (
+                <a
+                  href={songUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 block truncate text-sm text-[var(--text)] hover:text-[var(--accent)]"
+                  title={`${trackName}${artists.length ? ` — ${artists.join(", ")}` : ""}`}
+                >
+                  {trackName}
+                </a>
+              ) : (
+                <p className="mt-1 truncate text-sm text-[var(--text)]">{trackName}</p>
+              )
             ) : (
               <p className="mt-1 truncate text-sm text-[var(--muted)]">{subtitle}</p>
             )}

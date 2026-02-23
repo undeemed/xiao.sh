@@ -36,7 +36,7 @@ export default function Home() {
       </header>
 
       <section id="about" className="border border-[var(--line)] bg-[var(--panel)] p-6 md:p-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-col gap-5 md:grid md:grid-cols-[minmax(0,1fr)_18rem] md:items-start md:gap-6">
           <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Hello I&apos;m</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">{profile.name}</h1>
@@ -44,13 +44,14 @@ export default function Home() {
               CS @ {profile.education} class of 2029. {profile.bio} This site keeps things minimal: quick context,
               searchable projects, and direct links. Take a look at the stuff I've worked on below :)
             </p>
+            <ProjectSearch projects={projects} mode="search" className="mt-4 max-w-3xl" />
           </div>
 
-          <SpotifyNowPlaying className="md:mt-1" />
+          <SpotifyNowPlaying className="w-full max-w-[18rem] md:justify-self-end md:mt-2 md:w-[18rem] md:max-w-none" />
         </div>
       </section>
 
-      <ProjectSearch projects={projects} />
+      <ProjectSearch projects={projects} mode="cards" className="mt-6" />
     </main>
   );
 }

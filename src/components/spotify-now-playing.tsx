@@ -61,56 +61,74 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
 
   return (
     <div className={props.className}>
-      <div className="flex items-center gap-3 border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
-        <div className="relative h-11 w-11 shrink-0">
-          <div
-            className={[
-              "absolute inset-0 overflow-hidden rounded-full border border-[var(--line)] bg-[var(--panel)]",
-              isPlaying ? "animate-spin" : "",
-            ].join(" ")}
-            style={isPlaying ? { animationDuration: "7s" } : undefined}
-            aria-hidden="true"
-          >
-            {imageUrl ? (
-              <Image src={imageUrl} alt="" fill sizes="48px" className="object-cover" />
-            ) : (
-              <div className="h-full w-full bg-[radial-gradient(circle_at_30%_30%,rgba(110,231,255,0.22),transparent_55%),radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.06),transparent_60%)]" />
-            )}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.12),transparent_55%)]" />
+      <div className="relative aspect-square w-full border border-[var(--line)] bg-[var(--panel-2)] p-4">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgba(110,231,255,0.13),transparent_46%)]"
+          aria-hidden="true"
+        />
+        <div className="relative flex h-full flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
+              {isPlaying ? "Listening" : "Spotify"}
+            </p>
+            <span
+              className={[
+                "inline-flex h-2 w-2 rounded-full border border-[var(--panel)]",
+                isPlaying ? "bg-[var(--accent)]" : "bg-[var(--muted)]/40",
+              ].join(" ")}
+              aria-hidden="true"
+            />
           </div>
-          <div
-            className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--panel-2)] ring-1 ring-white/15"
-            aria-hidden="true"
-          />
-          <div
-            className={[
-              "absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-[var(--panel)]",
-              isPlaying ? "bg-[var(--accent)]" : "bg-[var(--muted)]/40",
-            ].join(" ")}
-            aria-hidden="true"
-          />
-        </div>
 
-        <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
-            {isPlaying ? "Listening" : "Spotify"}
-          </p>
-          {songUrl && trackName ? (
-            <a
-              href={songUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="block max-w-[18rem] truncate text-xs text-[var(--text)] hover:text-[var(--accent)]"
-              title={`${trackName}${artists.length ? ` — ${artists.join(", ")}` : ""}`}
-            >
-              {trackName}
-            </a>
-          ) : (
-            <p className="max-w-[18rem] truncate text-xs text-[var(--muted)]">{subtitle}</p>
-          )}
+          <div className="flex flex-1 items-center justify-center py-2">
+            <div className="relative h-28 w-28">
+              <div
+                className={[
+                  "absolute inset-0 overflow-hidden rounded-full border border-[var(--line)] bg-[var(--panel)]",
+                  isPlaying ? "animate-spin" : "",
+                ].join(" ")}
+                style={isPlaying ? { animationDuration: "7s" } : undefined}
+                aria-hidden="true"
+              >
+                {imageUrl ? (
+                  <Image src={imageUrl} alt="" fill sizes="112px" className="object-cover" />
+                ) : (
+                  <div className="h-full w-full bg-[radial-gradient(circle_at_30%_30%,rgba(110,231,255,0.22),transparent_55%),radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.06),transparent_60%)]" />
+                )}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.12),transparent_55%)]" />
+              </div>
+              <div
+                className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--panel-2)] ring-1 ring-white/15"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+
+          <div className="min-w-0 border-t border-[var(--line)] pt-3">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
+              {isPlaying ? "Now Playing" : "Status"}
+            </p>
+            {songUrl && trackName ? (
+              <a
+                href={songUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1 block truncate text-sm text-[var(--text)] hover:text-[var(--accent)]"
+                title={`${trackName}${artists.length ? ` — ${artists.join(", ")}` : ""}`}
+              >
+                {trackName}
+              </a>
+            ) : (
+              <p className="mt-1 truncate text-sm text-[var(--muted)]">{subtitle}</p>
+            )}
+            {artists.length > 0 && (
+              <p className="mt-0.5 truncate text-xs text-[var(--muted)]" title={artists.join(", ")}>
+                {artists.join(", ")}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
-

@@ -76,7 +76,7 @@ export default function ProjectSearch({
   const helperText =
     mode === "full"
       ? "Press Enter or send to open chat. Typing also filters project cards below."
-      : "Press Enter or send to open chat.";
+      : "Dual mode: typing filters project cards below, Enter/send opens AI chat.";
 
   const filteredProjects = useMemo(() => {
     const terms = query

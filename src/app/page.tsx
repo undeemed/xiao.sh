@@ -1,4 +1,5 @@
 import ProjectSearch from "@/components/project-search";
+import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
 import Link from "next/link";
@@ -35,12 +36,18 @@ export default function Home() {
       </header>
 
       <section id="about" className="border border-[var(--line)] bg-[var(--panel)] p-6 md:p-8">
-        <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Hello I&apos;m</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">{profile.name}</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--muted)] md:text-base">
-          CS @ {profile.education} class of 2029. {profile.bio} This site keeps things minimal: quick context,
-          searchable projects, and direct links. Take a look at the stuff I've worked on below :)
-        </p>
+        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Hello I&apos;m</p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">{profile.name}</h1>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--muted)] md:text-base">
+              CS @ {profile.education} class of 2029. {profile.bio} This site keeps things minimal: quick context,
+              searchable projects, and direct links. Take a look at the stuff I've worked on below :)
+            </p>
+          </div>
+
+          <SpotifyNowPlaying className="md:mt-1" />
+        </div>
       </section>
 
       <ProjectSearch projects={projects} />

@@ -229,6 +229,7 @@ function normalizeSnapshot(raw: unknown) {
     if (/^kotlin$/i.test(item)) return false;
     if (/^llama$/i.test(item)) return false;
     if (/^fireworks(\s*ai|\.js)?$/i.test(item)) return false;
+    if (/^three\.?js$/i.test(item)) return false;
     return true;
   });
   const collaborators = dedupeTextList(rawCollaborators, { maxLen: 40, limit: 16 });

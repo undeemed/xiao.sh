@@ -24,6 +24,8 @@ type TrackSnapshot = {
 };
 
 const LAST_TRACK_STORAGE_KEY = "xiao.sh:spotify:last-track:v1";
+const SPOTIFY_POLL_TIMEOUT_MS = 10_000;
+const FALLBACK_OFFLINE_DATA: NowPlayingResponse = { configured: false, isPlaying: false };
 
 function normalizeTrack(track: NowPlayingResponse["track"]): TrackSnapshot | null {
   if (!track?.name || typeof track.name !== "string") return null;
@@ -98,6 +100,8 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
       if (requestInFlight) return;
       requestInFlight = true;
       let nextDelayMs = document.visibilityState === "visible" ? 8_000 : 30_000;
+      const controller = new AbortController();
+      const abortTimeoutId = window.setTimeout(() => controller.abort(), SPOTIFY_POLL_TIMEOUT_MS);
 
       try {
         const response = await fetch(`/api/spotify/now-playing?ts=${Date.now()}`, {
@@ -106,7 +110,11 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
             "Cache-Control": "no-cache",
             Pragma: "no-cache",
           },
+          signal: controller.signal,
         });
+        if (!response.ok) {
+          throw new Error(`Spotify status ${response.status}`);
+        }
         const next = (await response.json()) as NowPlayingResponse;
         if (cancelled) return;
         setData(next);
@@ -129,8 +137,10 @@ export default function SpotifyNowPlaying(props: { className?: string }) {
         }
       } catch {
         if (cancelled) return;
+        setData((current) => current ?? FALLBACK_OFFLINE_DATA);
         nextDelayMs = document.visibilityState === "visible" ? 20_000 : 45_000;
       } finally {
+        window.clearTimeout(abortTimeoutId);
         requestInFlight = false;
         if (!cancelled) {
           timeoutId = window.setTimeout(poll, nextDelayMs);

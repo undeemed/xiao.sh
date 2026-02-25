@@ -4,6 +4,7 @@ import ProjectSearch from "@/components/project-search";
 import SpotifyNowPlaying from "@/components/spotify-now-playing";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
+import { EXTERNAL_LINK_ARROW } from "@/lib/symbols";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -34,7 +35,7 @@ export default function Home() {
               rel="noreferrer"
               className="border border-[var(--line)] px-2 py-1 hover:text-[var(--text)]"
             >
-              GitHub ↗
+              GitHub {EXTERNAL_LINK_ARROW}
             </a>
           </nav>
         </div>

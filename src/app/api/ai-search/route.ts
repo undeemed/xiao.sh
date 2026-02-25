@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getLinkedInSnapshot } from "@/lib/linkedin";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
+import { EXTERNAL_LINK_ARROW } from "@/lib/symbols";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models";
@@ -691,7 +692,7 @@ async function buildEmailToolResponse(
       const action: ToolAction = {
         type: "email_compose",
         href: draft.href,
-        label: "Open draft ↗",
+        label: `Open draft ${EXTERNAL_LINK_ARROW}`,
         to: draft.to,
         subject: draft.subject,
         body: draft.body,
@@ -716,7 +717,7 @@ async function buildEmailToolResponse(
   const fallbackAction: ToolAction = {
     type: "email_compose",
     href: fallbackDraft.href,
-    label: "Open draft ↗",
+    label: `Open draft ${EXTERNAL_LINK_ARROW}`,
     to: fallbackDraft.to,
     subject: fallbackDraft.subject,
     body: fallbackDraft.body,

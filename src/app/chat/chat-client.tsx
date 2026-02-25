@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { EXTERNAL_LINK_ARROW, UP_ARROW } from "@/lib/symbols";
 
 type ChatMessage = {
   id: string;
@@ -77,7 +78,7 @@ function normalizeStoredMessages(raw: unknown) {
               label:
                 typeof (message.action as Partial<ChatAction>).label === "string"
                   ? (message.action as Partial<ChatAction>).label
-                  : "Open draft ↗",
+                  : `Open draft ${EXTERNAL_LINK_ARROW}`,
               to:
                 typeof (message.action as Partial<ChatAction>).to === "string"
                   ? (message.action as Partial<ChatAction>).to
@@ -470,7 +471,7 @@ export default function ChatClient() {
                       href={message.action.href}
                       className="inline-block border border-[var(--line)] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                     >
-                      {message.action.label ?? "Open draft ↗"}
+                      {message.action.label ?? `Open draft ${EXTERNAL_LINK_ARROW}`}
                     </a>
                   </div>
                 )}
@@ -495,7 +496,7 @@ export default function ChatClient() {
             aria-label="Send message"
             className="grid h-10 w-10 place-items-center border border-[var(--line)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <span className="text-base leading-none">↑</span>
+            <span className="text-base leading-none">{UP_ARROW}</span>
           </button>
         </form>
       </section>

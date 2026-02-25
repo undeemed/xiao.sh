@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getLinkedInSnapshot } from "@/lib/linkedin";
 import { profile } from "@/lib/profile";
+import { EXTERNAL_LINK_ARROW } from "@/lib/symbols";
 
 function formatDate(value: string | undefined) {
   if (!value) return null;
@@ -86,7 +87,7 @@ export default async function AboutPage() {
               rel="noreferrer"
               className="border border-[var(--line)] px-2 py-1 hover:text-[var(--text)]"
             >
-              LinkedIn ↗
+              LinkedIn {EXTERNAL_LINK_ARROW}
             </a>
           </nav>
         </div>
@@ -209,7 +210,7 @@ export default async function AboutPage() {
                   rel="noreferrer"
                   className="inline-block border border-[var(--line)] px-2 py-1 text-[11px] uppercase tracking-[0.12em] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 >
-                  Open Post ↗
+                  Open Post {EXTERNAL_LINK_ARROW}
                 </a>
                 {post.videoUrl && (
                   <a
@@ -218,7 +219,7 @@ export default async function AboutPage() {
                     rel="noreferrer"
                     className="inline-block border border-[var(--line)] px-2 py-1 text-[11px] uppercase tracking-[0.12em] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   >
-                    Video ↗
+                    Video {EXTERNAL_LINK_ARROW}
                   </a>
                 )}
               </div>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { Project } from "@/lib/projects";
+import { EXTERNAL_LINK_ARROW, UP_ARROW } from "@/lib/symbols";
 
 type ProjectSearchProps = {
   projects: Project[];
@@ -169,7 +170,7 @@ export default function ProjectSearch({
               aria-label="Send question"
               className="grid h-10 w-10 place-items-center border border-[var(--line)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <span className="text-base leading-none">↑</span>
+              <span className="text-base leading-none">{UP_ARROW}</span>
             </button>
           </form>
           <div className="mt-2 flex items-center justify-between gap-3">
@@ -179,7 +180,7 @@ export default function ProjectSearch({
               onClick={() => router.push("/chat")}
               className="shrink-0 border border-[var(--line)] px-2 py-1 text-[11px] uppercase tracking-[0.12em] text-[var(--muted)] hover:text-[var(--text)]"
             >
-              Open Chat ↗
+              Open Chat {EXTERNAL_LINK_ARROW}
             </button>
           </div>
         </div>
@@ -211,7 +212,7 @@ export default function ProjectSearch({
                       rel="noreferrer"
                       className="inline-block border border-[var(--line)] px-2 py-1 text-xs uppercase tracking-[0.1em] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                     >
-                      GitHub ↗
+                      GitHub {EXTERNAL_LINK_ARROW}
                     </a>
                     {project.linkedinUrl && (
                       <a
@@ -220,7 +221,7 @@ export default function ProjectSearch({
                         rel="noreferrer"
                         className="inline-block border border-[var(--line)] px-2 py-1 text-xs uppercase tracking-[0.1em] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                       >
-                        LinkedIn ↗
+                        LinkedIn {EXTERNAL_LINK_ARROW}
                       </a>
                     )}
                     {project.eventUrl && (
@@ -230,7 +231,7 @@ export default function ProjectSearch({
                         rel="noreferrer"
                         className="inline-block border border-[var(--line)] px-2 py-1 text-xs uppercase tracking-[0.1em] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                       >
-                        Event ↗
+                        Event {EXTERNAL_LINK_ARROW}
                       </a>
                     )}
                   </div>
